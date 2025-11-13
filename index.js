@@ -20,14 +20,14 @@ import db from "./Kambaz/Database/index.js";
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     credentials: true,
     origin: process.env.CLIENT_URL || "http://localhost:3000",
   })
 );
-
-app.set("trust proxy", 1);
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "kambaz",
@@ -40,10 +40,6 @@ if (process.env.SERVER_ENV !== "development") {
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-    domain: "kambaz-node-server-app-vy3q.onrender.com",
-    partitioned: true,
   };
 }
 
