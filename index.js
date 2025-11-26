@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import "dotenv/config";
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
 import session from "express-session";
 
@@ -19,6 +20,8 @@ import EnrollmentRoutes from "./Kambaz/Enrollments/routes.js";
 import db from "./Kambaz/Database/index.js";
 
 const app = express();
+const CONNECTION_STRING = process.env.DATABASE_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz"
+mongoose.connect(CONNECTION_STRING);
 
 app.set("trust proxy", 1);
 
