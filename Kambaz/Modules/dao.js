@@ -1,28 +1,38 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { v4 as uuidv4 } from "uuid";
+import model from "./model.js";
 
 export default function ModulesDao(db) {
-  let { modules } = db;
-  
-  function findModulesForCourse(courseId) {
-    return modules.filter((module) => module.course === courseId);
+  async function findModulesForCourse(courseId) {
+    const modules = await model.find({ course: courseId });
+    return modules;
   }
   
-  function createModule(module) {
-    const newModule = { ...module, _id: uuidv4() };
-    db.modules = [...db.modules, newModule];
-    modules = db.modules;
-    return newModule;
+  async function createModule(courseId, module) {
+    const newModule = { 
+      ...module, 
+      _id: uuidv4(), 
+      course: courseId,
+      lessons: module.lessons || []
+    };
+    
+    try {
+      const created = await model.create(newModule);
+      return created;
+    } catch (error) {
+      console.error("Error creating module:", error);
+      throw error;
+    }
   }
   
-  function deleteModule(moduleId) {
-    db.modules = modules.filter((module) => module._id !== moduleId);
-    modules = db.modules;
+  async function deleteModule(courseId, moduleId) {
+    const result = await model.deleteOne({ _id: moduleId });
+    return result;
   }
   
-  function updateModule(moduleId, moduleUpdates) {
-    const module = modules.find((module) => module._id === moduleId);
-    Object.assign(module, moduleUpdates);
-    return module;
+  async function updateModule(courseId, moduleId, moduleUpdates) {
+    const result = await model.updateOne({ _id: moduleId }, { $set: moduleUpdates });
+    return result;
   }
   
   return {

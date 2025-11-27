@@ -1,8 +1,9 @@
-/* eslint-disable no-undef */
 import UsersDao from "./dao.js";
+import EnrollmentsDao from "../Enrollments/dao.js";
 
-export default function UserRoutes(app) {
+export default function UserRoutes(app, db) {
   const dao = UsersDao();
+  const enrollmentsDao = EnrollmentsDao(db);
   
   const createUser = async (req, res) => {
     const user = await dao.createUser(req.body);
@@ -70,13 +71,8 @@ export default function UserRoutes(app) {
 
   const findUsersForCourse = async (req, res) => {
     const { courseId } = req.params;
-    const users = await dao.findAllUsers();
-    const enrolledUsers = users.filter((user) =>
-      db.enrollments.some((enrollment) => 
-        enrollment.user === user._id && enrollment.course === courseId
-      )
-    );
-    res.json(enrolledUsers);
+    const users = await enrollmentsDao.findUsersForCourse(courseId);
+    res.json(users);
   };
   
   const signout = (req, res) => {

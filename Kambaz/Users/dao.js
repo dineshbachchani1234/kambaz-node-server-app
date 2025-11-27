@@ -1,9 +1,11 @@
 import model from "./model.js";
+import { v4 as uuidv4 } from "uuid";
 
 export default function UsersDao() {
   const createUser = async (user) => {
     delete user._id;
-    return await model.create(user);
+    const newUser = { ...user, _id: uuidv4() };  // Generate new UUID
+    return await model.create(newUser);
   };
   
   const findAllUsers = async () => await model.find();
