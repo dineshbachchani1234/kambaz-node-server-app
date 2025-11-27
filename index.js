@@ -48,6 +48,7 @@ if (process.env.SERVER_ENV !== "development") {
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
+    httpOnly: true,
   };
 }
 
